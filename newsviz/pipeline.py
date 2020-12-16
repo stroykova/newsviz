@@ -29,6 +29,8 @@ import numpy as np
 import pandas as pd
 import topic_model
 import tqdm
+
+from database import NewsVizDb
 from preprocessing_tools import clean_text, lemmatize
 
 logger = logging.getLogger("luigi-interface")
@@ -74,6 +76,9 @@ class PreprocessorTask(luigi.Task):
         self.input_path = self.config["common"]["raw_path"]
         self.output_path = self.config["preprocessor"]["output_path"]
         self.fnames = get_fnames(self.input_path)
+
+        self.db = NewsVizDb(self.config['database']['uri'])
+        logger.info('There are %s news in database', self.db.get_news_count())
 
     def run(self):
         logger = logging.getLogger("luigi-interface")
